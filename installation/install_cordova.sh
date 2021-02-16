@@ -2,8 +2,6 @@
 
 #######################################################################
 #
-# iWannit - Validacion
-#
 # Cordova installation script
 #
 # Requisites: run install_android_emulator.sh first
