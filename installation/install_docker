@@ -1,0 +1,44 @@
+#!/bin/bash
+
+#######################################################################
+#
+# Install docker in Ubuntu
+#
+# Arguments:
+# N/A
+# 
+#
+# 16/02/2021 - V1 by Miguel
+#
+######################################################################
+
+
+# ----------------------------------------------------------------------------
+# Logging function
+# ----------------------------------------------------------------------------
+function log(){
+  echo " `date +%Y-%m-%dT%H:%M:%S` >> ${*}"
+}
+
+
+#Docker requirements
+log "Installing Docker requirements"
+log "Installing PHP version 5.6"
+sudo apt-get install php5.6-xml
+sudo apt-get install php5.6-common php5.6 libapache2-mod-php5.6 php5.6-cgi php5.6-mysql imagemagick php5.6-cli php5.6-curl php5.6-gd php5.6-mcrypt php5.6-memcache
+sudo apt-get install php5.6-mbstring
+sudo service apache2 restart
+
+log "Installing nodejs"
+sudo printf "deb [arch=amd64] https://deb.nodesource.com/node_10.x bionic main\ndeb-src deb-src https://deb.nodesource.com/node_10.x bionic main\n" > /etc/apt/sources.list.d/nodesource.list
+curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
+sudo apt-get install nodejs
+
+log "Installing mysql-shell"
+sudo snap install mysql-shell
+
+#Installing docker
+log "Installing docker-compose"
+sudo apt install docker-compose
+
+log "Docker installed and configured"
