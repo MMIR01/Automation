@@ -39,7 +39,6 @@ function check_java_version(){
 	elif [[ -n "$JAVA_HOME" ]] && [[ -x "$JAVA_HOME/bin/java" ]];  then   
 	    _java="$JAVA_HOME/bin/java"
 	else
-	    echo "no instalado"
 	    return_value=1
 	fi
 
