@@ -1,0 +1,75 @@
+#!/bin/bash
+
+#######################################################################
+#
+# Install Jenkins
+#
+# Arguments:
+# N/A
+# 
+#
+# 16/02/2021 - V1 by Miguel
+#
+######################################################################
+
+
+# ----------------------------------------------------------------------------
+# Logging function
+# ----------------------------------------------------------------------------
+function log(){
+  echo " `date +%Y-%m-%dT%H:%M:%S` >> ${*}"
+}
+
+#Variables
+JENKINSPORT='9090'
+
+#Start time
+start=`date +%s`
+
+#Jenkins requisites
+log "Installing Jenkins requirements"
+#Openjdk
+log "Installing Openjdk"
+sudo apt install openjdk-8-jdk
+java -version
+log "Updating sudoers file"
+echo 'jenkins ALL=(ALL) NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
+
+#Installing Jenkins
+log "Downloading Jenkins LTS version"
+wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
+sudo sh -c 'echo deb https://pkg.jenkins.io/debian-stable binary/ > \
+    /etc/apt/sources.list.d/jenkins.list'
+sudo apt-get update
+log "Installing Jenkins"
+sudo apt-get install jenkins
+
+
+#In case you want to change the default port (e.g. 8080 is used by phpmyadmin)
+log "Changing Jenkins port to ${JENKINSPORT}"
+log "Stopping Jenkins first"
+sudo systemctl stop jenkins
+log "Change the port number from /etc/default/jenkins file"
+sudo sed -i "s/HTTP_PORT=8080/HTTP_PORT=${JENKINSPORT}/g" /etc/default/jenkins
+log "Starting up Jenkins"
+sudo systemctl start jenkins
+sudo systemctl status jenkins
+
+#Manual steps
+log "Setup Jenkins"
+log "1. Copy and paste the following password in the web browser"
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+firefox http://localhost:${JENKINSPORT}
+read -n 1 -r -s -p $'Press enter to continue...\n'
+log "2. Select the plugins to be installed"
+read -n 1 -r -s -p $'Press enter to continue...\n'
+log "3. Create the admin user"
+#read -n 1 -r -s -p $'Press enter to continue...\n'
+log "Jenkins installed and configured"
+
+end=`date +%s`
+#Execution time
+runtime=$((end-start))
+let min=${runtime}/60
+let seg=${runtime}%60
+log "Execution time: ${min}min ${seg}seg"
