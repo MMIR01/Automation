@@ -1,0 +1,65 @@
+#!/bin/bash
+
+#######################################################################
+#
+# Install Aptana as IDE
+#
+# Argumentos:
+# N/A
+# 
+#
+# 16/02/2021 - V1 by Miguel
+#
+######################################################################
+
+
+# ----------------------------------------------------------------------------
+# Logging function
+# ----------------------------------------------------------------------------
+function log(){
+  echo " `date +%Y-%m-%dT%H:%M:%S` >> ${*}"
+}
+
+
+#Variables
+INSTALLATION_FOLDER="/opt/AptanaStudio3"
+CURRENT_DIR=`pwd`
+USER=`whoami`
+#GROUP=`groups | xargs awk '{ printf "%10s\n", $1 }'`
+
+#Start time
+start=`date +%s`
+
+
+log "Downloading Aptana..."
+cd /tmp
+wget -O AptanaStudio3.zip https://github.com/aptana/studio3/releases/download/3.7.2.201807301111/aptana.studio-linux.gtk.x86_64.zip
+
+
+#Cleaning in case there is a previous installation
+sudo rm -rf ${INSTALLATION_FOLDER}
+
+log "Unzipping..."
+cd /tmp
+sudo unzip AptanaStudio3.zip -d ${INSTALLATION_FOLDER}
+log "Creating links..."
+sudo ln -s ${INSTALLATION_FOLDER}/AptanaStudio3 /usr/local/bin/AptanaStudio3
+log "Changing permissions..."
+#sudo chown ${USER}:${GROUP} ${INSTALLATION_FOLDER} -R
+sudo chown ${USER} ${INSTALLATION_FOLDER} -R
+#sudo chown ${USER}:${GROUP} /usr/local/bin/AptanaStudio3
+sudo chown ${USER} /usr/local/bin/AptanaStudio3
+sudo chmod +x ${INSTALLATION_FOLDER}/AptanaStudio3
+
+log "End of the installation"
+
+log "Cleaning up"
+cd /tmp
+rm AptanaStudio3.zip
+
+end=`date +%s`
+#Execution time
+runtime=$((end-start))
+let min=${runtime}/60
+let seg=${runtime}%60
+log "Execution time: ${min}min ${seg}seg"
